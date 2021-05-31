@@ -12,7 +12,7 @@ $(document).ready(function() {
    getAllTasks();
 
    function getAllAvailableBoards(callback, callbackArgs) {
-      var requestUrl = trelloApiRoot + 'tasks';
+      var requestUrl = trelloApiRoot + 'boards';
 
       $.ajax({
          url: requestUrl,
@@ -97,13 +97,18 @@ $(document).ready(function() {
            title: taskTitle,
            content: taskContent
          }),
-         success: function(data) {
-            parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-            parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-            parentEl.find('[data-task-content-paragraph]').text(taskContent);
-         }
-      });
-   }
+         success: function(data) {  
+            parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');  
+            parentEl.find('[data-task-name-paragraph]').text(taskTitle);  
+            parentEl.find('[data-task-content-paragraph]').text(taskContent); 
+          },  
+          complete: function(data) {  
+            if(data.status === 200) { 
+              getAllTasks();  
+            } 
+          } 
+          }); 
+     }
 
    function handleTaskDeleteRequest() {
       var parentEl = $(this).parents('[data-task-id]');
